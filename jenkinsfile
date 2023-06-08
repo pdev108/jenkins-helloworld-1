@@ -1,15 +1,18 @@
 node {
+  def app
     stage('Clone') {
-    git 'https://github.com/pdev108/jenkins-helloworld-1.git'
+         checkout scm
     }
     
-    stage('Build') {
-    sh '''javac Main.java
-    '''
+    stage('Build image') {
+         app = docker.build("niama/nginx")
     }
     
-    stage('Run') {
-    sh '''java Main
-    '''
+    stage('Run image') {
+        docker.image('niama/nginx').withRun('-p 80:80') { c->
+
+        sh 'docker ps'
+        sh 'curl localhost'
+    }
     }
 }
